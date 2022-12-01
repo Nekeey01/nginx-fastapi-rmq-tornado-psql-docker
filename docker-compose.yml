@@ -1,0 +1,107 @@
+version: "3.7"
+
+services:
+
+  rabbit1:
+    container_name: rabbit1
+
+    image: "rabbitmq:3.11.4"
+    hostname: rabbit1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "TESTVOLUME"
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "guest"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq1"
+    networks:
+      - back
+    tty: true
+
+    command: bash -c "sleep 10; rabbitmq-server;"
+
+  backend:
+    container_name: backend
+
+    build: backend/
+
+    command: python ./main.py
+
+    networks:
+      - back
+    ports:
+      - 8888:8888
+    environment:
+      - RabbitMq:Hostname=rabbit1
+
+    volumes:
+      - C:\Users\Paradox\PycharmProjects\RegObr\frontend:/frontend/
+      - .:/code
+
+
+    depends_on:
+      - rabbit1
+
+  db:
+    image: postgres:11
+    container_name: db
+
+    restart: always
+    networks:
+      - back
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test_db
+      - POSTGRES_HOST_AUTH_METHOD=trust
+
+  servicedb:
+
+    build: servicedb/
+    container_name: servicedb
+    restart: always
+
+    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+
+    ports:
+      - 80:80
+
+    networks:
+      - back
+    environment:
+      - RabbitMq:Hostname=rabbit1
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=test_db
+    depends_on:
+      - rabbit1
+      - backend
+      - db
+      - pgadmin
+
+  pgadmin:
+    restart: always
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    networks:
+      - back
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=pgadmin4@pgadmin.org
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+
+
+networks:
+    back:
+
+volumes:
+    rabbit1:
+        driver: local
