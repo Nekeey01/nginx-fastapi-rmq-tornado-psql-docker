@@ -5,7 +5,7 @@ services:
   rabbit1:
     container_name: rabbit1
 
-    image: "rabbitmq:3.11.4"
+    image: "rabbitmq:3.11.4-management"
     hostname: rabbit1
     environment:
       RABBITMQ_ERLANG_COOKIE: "TESTVOLUME"
