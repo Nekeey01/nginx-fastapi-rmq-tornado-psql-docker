@@ -12,8 +12,20 @@ define("debug", default=True, help="run in debug mode")
 
 
 class MainHandler(tornado.web.RequestHandler):
+    def set_default_headers(self):
+        print("set header")
+        self.set_header("Content-Type", "application/json")
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "content-type")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS, PATCH, PUT')
+
+    def options(self):
+        self.set_status(204)
+        self.finish()
+
     def get(self):
-        self.render("index.html")
+        # self.render("index.html")
+        pass
 
     async def post(self):
         body_json = tornado.escape.json_decode(self.request.body)

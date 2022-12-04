@@ -9,8 +9,8 @@
         docker-compose exec servicedb alembic upgrade head
 
 ____
-## Ссылка для запуска проекта
-        http://localhost:8888/
+## Ссылка для запуска страницы обращения
+        http://localhost:8000/
 ____
 ## PGAdmin
     http://localhost:5050/
@@ -20,7 +20,7 @@ ____
 
     Подключение сервера:
         Host:db
-        Maintenance database:db_test
+        Maintenance database:postgres
         Username:postgres
         Password:postgres
 ____
@@ -28,10 +28,10 @@ ____
     http://localhost:15672/
     
     user:guest
-    password:gues
+    password:guest
 ____
 ## Удаление проекта
         docker-compose down -v
 ____
 ## WARNING!
-    Иногда, впервые запуская проект, контейнер "servicedb" надо перезагрузить, перед использованием docker-compose exec 
+    Иногда, впервые запуская проект, контейнер "servicedb" или "db" надо перезагрузить, перед использованием docker-compose exec 

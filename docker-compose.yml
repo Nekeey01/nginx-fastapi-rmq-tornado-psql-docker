@@ -2,6 +2,14 @@ version: "3.7"
 
 services:
 
+  frontend:
+    build: frontend/
+
+    networks:
+      - back
+    ports:
+      - 8000:80
+
   rabbit1:
     container_name: rabbit1
 
@@ -37,11 +45,6 @@ services:
     environment:
       - RabbitMq:Hostname=rabbit1
 
-    volumes:
-      - C:\Users\Paradox\PycharmProjects\RegObr\frontend:/frontend/
-      - .:/code
-
-
     depends_on:
       - rabbit1
 
@@ -66,7 +69,7 @@ services:
     container_name: servicedb
     restart: always
 
-    command: bash -c "alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
+    command: bash -c "uvicorn main:app --host 0.0.0.0 --port 8000 --reload"
 
     ports:
       - 80:80

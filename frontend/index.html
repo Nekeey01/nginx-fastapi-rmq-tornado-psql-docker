@@ -94,10 +94,10 @@
 
                 $.ajax(
                     {
-                        url: '/',
+                        url: 'http://localhost:8888/',
                         type: 'POST',
                         data: formData,
-
+                        crossDomain: true,
                         dataType: "json",
                         contentType: "application/json",
 
